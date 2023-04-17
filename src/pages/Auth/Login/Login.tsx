@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { notification } from 'antd'
 
 import authServices from 'src/services/authServices';
 import LoginImage from 'src/components/Icon/LoginImage';
@@ -14,17 +14,31 @@ const Login = () => {
       email: e.target.email.value,
       password: e.target.password.value,
     };
-    console.log(data);
     authServices
       .authLogin(data)
-      .then((res) => {
-        toast.success('Login Successfully');
+      .then((result) => {
+        notification.success({
+          description: result.data.message,
+          message: '',
+        });
         localStorage.setItem('loggedIn', 'true');
-        navigate('/chat');
+        setTimeout(() => {
+          navigate('/chat');
+        }, 500);
       })
-      .catch((err) => {
-        console.log('error = ', err);
-        toast.error(err.response.data.message);
+      .catch((error) => {
+        console.log('error = ', error);
+        if (error.response) {
+          notification.error({
+            description: `${error.response.data.message}`,
+            message: '',
+          });
+        } else {
+          notification.error({
+            description: 'Server Error',
+            message: '',
+          });
+        }
       });
   };
 

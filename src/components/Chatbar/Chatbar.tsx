@@ -7,6 +7,7 @@ import { isEmpty } from 'src/utils/isEmpty';
 
 const Chatbar = () => {
   const [count, setCount] = useState(0);
+  const [showModal, setShowModal] = useState(false);
   const [conversationCount, setConversationCount] = useState(
     isEmpty(JSON.parse(localStorage.getItem('conversationHistory')))
       ? []
@@ -63,7 +64,12 @@ const Chatbar = () => {
               QUICK QUESTION
             </label>
 
-            <Question name={'SUMMARIZE'} />
+            <Question
+              name={'SUMMARIZE'}
+              onClick={() => setShowModal(true)}
+              showModal={showModal}
+              setShowModal={setShowModal}
+            />
             <Question name={'KEY POINTS'} />
             <Question name={'WHY'} />
             <Question name={'OTHER 1'} />

@@ -1,22 +1,27 @@
 import axios from 'axios';
+import backend_api from 'src/config';
 
 const uploadFile = (formData) => {
-  return axios.post('http://localhost:8080/upload/file', formData, {
+  return axios.post(backend_api + 'upload/file', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
   });
 };
 
+const prompt = (value) => {
+  return axios.post(backend_api + 'upload/prompt', { value });
+};
+
 const embedding = (fileName) => {
-  return axios.post('http://localhost:8080/upload/train', {
+  return axios.post(backend_api + 'upload/train', {
     filename: fileName,
   });
 };
 
 const requestMessage = (value) => {
   console.log('vaule = ', value);
-  return fetch('http://localhost:8080/upload/requestMessage', {
+  return fetch(backend_api + 'upload/requestMessage', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -31,4 +36,5 @@ export default {
   uploadFile,
   embedding,
   requestMessage,
+  prompt,
 };
