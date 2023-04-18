@@ -10,7 +10,11 @@ const uploadFile = (formData) => {
 };
 
 const prompt = (value) => {
-  return axios.post(backend_api + 'upload/prompt', { value });
+  return axios.post(backend_api + 'upload/changePrompt', { value });
+};
+
+const getPrompt = () => {
+  return axios.get(backend_api + 'upload/getPrompt');
 };
 
 const embedding = (fileName) => {
@@ -37,4 +41,5 @@ export default {
   embedding,
   requestMessage,
   prompt,
+  getPrompt,
 };

@@ -1,18 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { IconMessagesOff, IconPlus, IconHome } from '@tabler/icons-react';
 
 import ChatConversation from '../ChatConversation/ChatConversation';
 import Question from '../Question/Question';
+import uploadServices from 'src/services/uploadServices';
 import { isEmpty } from 'src/utils/isEmpty';
 
 const Chatbar = () => {
+  const navigate = useNavigate();
   const [count, setCount] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const [promptValue, setPromptValue] = useState('');
   const [conversationCount, setConversationCount] = useState(
     isEmpty(JSON.parse(localStorage.getItem('conversationHistory')))
       ? []
       : JSON.parse(localStorage.getItem('conversationHistory'))
   );
+
+  useEffect(() => {
+    uploadServices
+      .getPrompt()
+      .then((result) => {
+        console.log(result);
+        setPromptValue(result.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  const gotoChat = () => {
+    navigate('/chat');
+  };
 
   const handlePlus = () => {
     conversationCount.push('1');
@@ -43,7 +63,7 @@ const Chatbar = () => {
       <div>
         <button
           className="flex w-full gap-3 items-center cursor-pointer select-none rounded-md p-4 text-[14px] leading-normal bg-blue-400 text-white transition-colors duration-200 hover:bg-gray-500/10"
-          // onClick={() => handlePlus()}
+          onClick={() => gotoChat()}
         >
           <IconHome size={18} />
           Admin Dash Board
@@ -69,6 +89,7 @@ const Chatbar = () => {
               onClick={() => setShowModal(true)}
               showModal={showModal}
               setShowModal={setShowModal}
+              promptValue={promptValue}
             />
             <Question name={'KEY POINTS'} />
             <Question name={'WHY'} />

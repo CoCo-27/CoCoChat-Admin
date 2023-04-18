@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { notification } from 'antd'
+import { notification, Spin } from 'antd';
 
 import authServices from 'src/services/authServices';
 import LoginImage from 'src/components/Icon/LoginImage';
+import Loading from 'src/components/Icon/loader';
 import './Login.css';
 
 const Login = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
   const handleClick = (e) => {
+    setLoading(true);
     e.preventDefault();
     const data = {
       email: e.target.email.value,
@@ -21,6 +25,7 @@ const Login = () => {
           description: result.data.message,
           message: '',
         });
+        setLoading(false);
         localStorage.setItem('loggedIn', 'true');
         setTimeout(() => {
           navigate('/chat');
@@ -28,6 +33,7 @@ const Login = () => {
       })
       .catch((error) => {
         console.log('error = ', error);
+        setLoading(false);
         if (error.response) {
           notification.error({
             description: `${error.response.data.message}`,
@@ -108,8 +114,13 @@ const Login = () => {
                                 font-semibold font-display focus:outline-none focus:shadow-outline hover:bg-indigo-600
                                 shadow-lg"
                     type="submit"
+                    disabled={loading}
                   >
-                    Log In
+                    {!loading ? (
+                      'Log In'
+                    ) : (
+                      <Spin indicator={Loading} style={{ color: 'white' }} />
+                    )}
                   </button>
                 </div>
               </form>

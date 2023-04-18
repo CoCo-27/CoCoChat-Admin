@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Modal } from 'antd';
+import 'antd/dist/antd';
 import uploadServices from 'src/services/uploadServices';
 
-const PromptModal = ({ showModal, setShowModal }) => {
+const PromptModal = ({ promptValue, showModal, setShowModal }) => {
   const [value, setValue] = useState('');
 
   const handleValue = () => {
@@ -10,6 +11,7 @@ const PromptModal = ({ showModal, setShowModal }) => {
       .prompt(value)
       .then((result) => {
         console.log(result);
+        setShowModal(false);
       })
       .catch((error) => {
         console.log(error);
@@ -21,14 +23,16 @@ const PromptModal = ({ showModal, setShowModal }) => {
       title="Prompt Change"
       centered
       open={showModal}
+      okButtonProps={{ danger: true }}
+      okText={'Save'}
       onOk={() => handleValue()}
       onCancel={() => setShowModal(false)}
       width={600}
     >
       <input
         type="text"
-        className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
-        value={value}
+        className="bg-gray-50 border border-blue-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
+        defaultValue={promptValue}
         onChange={(e) => setValue(e.target.value)}
       />
     </Modal>

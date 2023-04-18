@@ -7,6 +7,7 @@ const Question = (props) => {
       <PromptModal
         showModal={props.showModal}
         setShowModal={props.setShowModal}
+        promptValue={props.promptValue}
       />
       <button
         className="flex w-full cursor-pointer justify-center rounded-lg py-2 text-base text-white transition-colors duration-200 bg-[#343541]/90 "
