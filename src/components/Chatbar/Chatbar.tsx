@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IconMessagesOff, IconPlus, IconHome } from '@tabler/icons-react';
+import { notification } from 'antd';
 
 import ChatConversation from '../ChatConversation/ChatConversation';
 import Question from '../Question/Question';
+import questionServices from 'src/services/questionServices';
 import uploadServices from 'src/services/uploadServices';
 import { isEmpty } from 'src/utils/isEmpty';
 
-const Chatbar = () => {
+const Chatbar = ({ setLoading }) => {
   const navigate = useNavigate();
   const [count, setCount] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const [editable, setEditable] = useState(false);
+  const [questionArray, setQuestionArray] = useState([]);
   const [promptValue, setPromptValue] = useState('');
+  const [selectIndex, setSelectIndex] = useState('');
   const [conversationCount, setConversationCount] = useState(
     isEmpty(JSON.parse(localStorage.getItem('conversationHistory')))
       ? []
@@ -19,10 +24,19 @@ const Chatbar = () => {
   );
 
   useEffect(() => {
+    questionServices
+      .getQuestion()
+      .then((result) => {
+        console.log(result);
+        setQuestionArray(result.data.data);
+      })
+      .catch((error) => {
+        console.log('Question Error = ', error);
+      });
+
     uploadServices
       .getPrompt()
       .then((result) => {
-        console.log(result);
         setPromptValue(result.data.data);
       })
       .catch((error) => {
@@ -32,6 +46,46 @@ const Chatbar = () => {
 
   const gotoChat = () => {
     navigate('/chat');
+  };
+
+  const handleShowModal = (index) => {
+    index === 0 ? setShowModal(true) : setShowModal(false);
+  };
+
+  const handleSave = (text, index) => {
+    const array = Array.from(questionArray);
+    array[index] = text;
+
+    console.log('array = ', array);
+    setLoading(true);
+    questionServices
+      .editQuestion(array)
+      .then((result) => {
+        console.log(result);
+        setEditable(false);
+        setLoading(false);
+        setQuestionArray(result.data.data);
+        notification.success({
+          description: result.data.message,
+          message: '',
+          duration: 2,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+        notification.error({
+          description: error.response.message,
+          message: '',
+          duration: 2,
+        });
+      });
+  };
+
+  const handleEdit = (index) => {
+    console.log(index);
+    setSelectIndex(index);
+    setEditable(!editable);
   };
 
   const handlePlus = () => {
@@ -83,19 +137,32 @@ const Chatbar = () => {
             <label className="flex text-white font-bold text-xl justify-center mt-8 mb-4 underline-offset-4">
               QUICK QUESTION
             </label>
-
-            <Question
-              name={'SUMMARIZE'}
-              onClick={() => setShowModal(true)}
-              showModal={showModal}
-              setShowModal={setShowModal}
-              promptValue={promptValue}
-            />
-            <Question name={'KEY POINTS'} />
-            <Question name={'WHY'} />
-            <Question name={'OTHER 1'} />
-            <Question name={'OTHER 2'} />
-            <Question name={'OTHER 3'} />
+            {questionArray.length > 0 ? (
+              questionArray.map((item, index) => {
+                return (
+                  <div key={index}>
+                    <Question
+                      index={index}
+                      name={item}
+                      onClick={handleShowModal}
+                      onSave={handleSave}
+                      editable={editable}
+                      onEdit={handleEdit}
+                      showModal={showModal}
+                      setShowModal={setShowModal}
+                      promptValue={promptValue}
+                      setSelect={setSelectIndex}
+                      select={selectIndex}
+                    />
+                  </div>
+                );
+              })
+            ) : (
+              <div className="flex flex-col gap-3 items-center text-sm leading-normal mt-8 text-white opacity-50">
+                <IconMessagesOff />
+                No Questions.
+              </div>
+            )}
             {/* {conversationCount.length > 0 ? (
               <div className="h-full">
                 {conversationCount.map((item, index) => {

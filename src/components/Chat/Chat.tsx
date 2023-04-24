@@ -3,24 +3,27 @@ import { message, Upload, notification } from 'antd';
 import { UploadFile } from 'antd/es/upload';
 import ChatMessage from '../ChatMessage/ChatMessage';
 import uploadServices from 'src/services/uploadServices';
+import titleServices from 'src/services/titleServices';
+import backend_api from '../../config';
 
 import './Chat.css';
 
 const { Dragger } = Upload;
 
-const Chat = () => {
+const Chat = ({ setLoading }) => {
   const inputRef = useRef();
   const [formValue, setFormValue] = useState('');
   const [files, setFiles] = useState([]);
   const [fileName, setFileName] = useState('');
   const [fileRealName, setFileRealName] = useState('');
   const [promptValue, setPromptValue] = useState('');
+  const [title, setTitle] = useState('');
   const [array, setArray] = useState([]);
   const req_qa_box = useRef(null);
 
   const props = {
     name: 'file',
-    action: 'http://localhost:9000/upload/file',
+    action: backend_api + 'upload/file',
     onChange: (info) => {
       setFiles(info.fileList);
       if (info.file.status === 'done') {
@@ -48,7 +51,15 @@ const Chat = () => {
 
   useEffect(() => {
     req_qa_box.current.scrollTop = req_qa_box.current.scrollHeight;
-  }, []);
+    titleServices
+      .getTitle()
+      .then((result) => {
+        setTitle(result.data.data[0].title);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [title]);
 
   const handleEmbedding = (e) => {
     e.preventDefault();
@@ -71,6 +82,38 @@ const Chat = () => {
     setFileName('');
   };
 
+  const handleEnterTitle = (e) => {
+    if (e.key === 'Enter') {
+      handleTitleChange();
+    }
+  };
+
+  const handleTitleChange = async () => {
+    setLoading(true);
+    titleServices
+      .editTitle(promptValue)
+      .then((result) => {
+        console.log(result);
+        setPromptValue('');
+        setTitle(result.data.data);
+        setLoading(false);
+        notification.success({
+          description: result.data.message,
+          message: '',
+          duration: 2,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+        notification.success({
+          description: 'Something went Wrong',
+          message: '',
+          duration: 2,
+        });
+      });
+  };
+
   const handlePressEnter = (e) => {
     if (e.key === 'Enter') {
       handleMessage();
@@ -85,7 +128,6 @@ const Chat = () => {
     setArray(save);
     const response = await uploadServices.requestMessage(formValue);
     const data = await response.json();
-    console.log(data);
     const update = save.slice();
     update[update.length - 1].message = data.text;
     setArray(update);
@@ -96,12 +138,13 @@ const Chat = () => {
       <div className="h-full flex flex-col flex-1 justify-between pl-24 pr-24 py-4 duration-500 overflow-hidden relative bg-white">
         <div className="h-full flex flex-col">
           <div className="relative flex w-full flex-col p-2 rounded-md border border-black/10 shadow-[0_0_10px_rgba(0,0,0,0.10)] ">
-            <textarea
+            <input
               ref={inputRef}
               className="m-0 w-full resize-none border-0 overflow-hidden bg-transparent py-2 text-black dark:bg-transparent dark:text-white md:py-2 md:pl-4"
               value={promptValue}
-              placeholder="WELCOME TO 'PROGRAM' SIMPLY DROP YOUR FILE OR PASTE YOUR TEXT AND THEN ASK A QUICK QUESTION OR ASK YOUR OWN"
+              placeholder={title}
               onChange={(e) => setPromptValue(e.target.value)}
+              onKeyDown={(e) => handleEnterTitle(e)}
               style={{
                 maxHeight: '400px',
                 height: '44px',
