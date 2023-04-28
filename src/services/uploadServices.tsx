@@ -10,7 +10,7 @@ const uploadFile = (formData) => {
 };
 
 const prompt = (value) => {
-  return axios.post(backend_api + 'upload/changePrompt', { value });
+  return axios.post(backend_api + 'upload/changePrompt', value);
 };
 
 const getPrompt = () => {

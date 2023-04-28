@@ -2,19 +2,27 @@ import React, { useState } from 'react';
 import PromptModal from '../PromptModal/PromptModal';
 
 const Question = (props) => {
+  console.log('Question !! = ', props);
   const [text, setText] = useState(props.name ? props.name : '');
 
   return (
     <div className="relative flex items-center py-2">
-      <PromptModal
-        showModal={props.showModal}
-        setShowModal={props.setShowModal}
-        promptValue={props.promptValue}
-      />
+      {props.showModal === true && props.index == props.select ? (
+        <PromptModal
+          showModal={props.showModal}
+          setShowModal={props.setShowModal}
+          promptValue={props.promptValue}
+          setPromptValue={props.setPromptValue}
+          index={props.select}
+        />
+      ) : (
+        <></>
+      )}
+
       {props.editable === true && props.index == props.select ? (
         <div className="flex w-full rounded-lg py-2 text-base text-white transition-colors duration-200 bg-[#343541]/90">
           <input
-            className="pl-4 mr-12 overflow-hidden overflow-ellipsis border-neutral-400 bg-transparent text-left text-base text-white outline-none focus:border-neutral-100"
+            className="pl-4 mr-12 bg-[#343541]/90 overflow-hidden overflow-ellipsis border-neutral-400 bg-transparent text-left text-base text-white outline-none focus:border-neutral-100"
             value={text}
             onChange={(e) => setText(e.target.value)}
           />

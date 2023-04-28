@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { message, Upload, notification } from 'antd';
 import { UploadFile } from 'antd/es/upload';
+import setAuthToken from 'src/utils/setAuthToken';
 import ChatMessage from '../ChatMessage/ChatMessage';
 import uploadServices from 'src/services/uploadServices';
 import titleServices from 'src/services/titleServices';
@@ -119,6 +120,10 @@ const Chat = ({ setLoading }) => {
       handleMessage();
     }
   };
+
+  useEffect(() => {
+    setAuthToken(localStorage.getItem('token'));
+  }, []);
 
   const handleMessage = async () => {
     setFormValue('');

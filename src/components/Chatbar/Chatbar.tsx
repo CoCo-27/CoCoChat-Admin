@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { IconMessagesOff, IconPlus, IconHome } from '@tabler/icons-react';
 import { notification } from 'antd';
 
-import ChatConversation from '../ChatConversation/ChatConversation';
 import Question from '../Question/Question';
 import questionServices from 'src/services/questionServices';
 import uploadServices from 'src/services/uploadServices';
@@ -15,7 +14,7 @@ const Chatbar = ({ setLoading }) => {
   const [showModal, setShowModal] = useState(false);
   const [editable, setEditable] = useState(false);
   const [questionArray, setQuestionArray] = useState([]);
-  const [promptValue, setPromptValue] = useState('');
+  const [promptValue, setPromptValue] = useState([]);
   const [selectIndex, setSelectIndex] = useState('');
   const [conversationCount, setConversationCount] = useState(
     isEmpty(JSON.parse(localStorage.getItem('conversationHistory')))
@@ -27,7 +26,7 @@ const Chatbar = ({ setLoading }) => {
     questionServices
       .getQuestion()
       .then((result) => {
-        console.log(result);
+        console.log('Queston!!!!! = ', result);
         setQuestionArray(result.data.data);
       })
       .catch((error) => {
@@ -37,6 +36,7 @@ const Chatbar = ({ setLoading }) => {
     uploadServices
       .getPrompt()
       .then((result) => {
+        console.log('GetPrompt = ', result);
         setPromptValue(result.data.data);
       })
       .catch((error) => {
@@ -44,12 +44,14 @@ const Chatbar = ({ setLoading }) => {
       });
   }, []);
 
-  const gotoChat = () => {
-    navigate('/chat');
+  const gotoDashBoard = () => {
+    navigate('/dashBoard');
   };
 
   const handleShowModal = (index) => {
-    index === 0 ? setShowModal(true) : setShowModal(false);
+    console.log('Before Index = ', index);
+    setSelectIndex(index);
+    setShowModal(true);
   };
 
   const handleSave = (text, index) => {
@@ -83,7 +85,6 @@ const Chatbar = ({ setLoading }) => {
   };
 
   const handleEdit = (index) => {
-    console.log(index);
     setSelectIndex(index);
     setEditable(!editable);
   };
@@ -117,7 +118,7 @@ const Chatbar = ({ setLoading }) => {
       <div>
         <button
           className="flex w-full gap-3 items-center cursor-pointer select-none rounded-md p-4 text-[14px] leading-normal bg-blue-400 text-white transition-colors duration-200 hover:bg-gray-500/10"
-          onClick={() => gotoChat()}
+          onClick={() => gotoDashBoard()}
         >
           <IconHome size={18} />
           Admin Dash Board
@@ -151,6 +152,7 @@ const Chatbar = ({ setLoading }) => {
                       showModal={showModal}
                       setShowModal={setShowModal}
                       promptValue={promptValue}
+                      setPromptValue={setPromptValue}
                       setSelect={setSelectIndex}
                       select={selectIndex}
                     />

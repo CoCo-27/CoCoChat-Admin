@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { notification, Spin } from 'antd';
 
 import authServices from 'src/services/authServices';
-import LoginImage from 'src/components/Icon/LoginImage';
+import setAuthToken from 'src/utils/setAuthToken';
+import AuthButton from 'src/components/CustomeButton/AuthButton';
 import Loading from 'src/components/Icon/loader';
+import imgUrl from '../../../assets/img/background.png';
 import './Login.css';
 
 const Login = () => {
@@ -26,9 +28,12 @@ const Login = () => {
           message: '',
         });
         setLoading(false);
-        localStorage.setItem('loggedIn', 'true');
+        console.log(result);
+        localStorage.setItem('email', result.data.data.email);
+        localStorage.setItem('token', result.data.data.accessToken);
+        setAuthToken(localStorage.getItem('token'));
         setTimeout(() => {
-          navigate('/chat');
+          navigate('/dashBoard');
         }, 500);
       })
       .catch((error) => {
@@ -36,7 +41,7 @@ const Login = () => {
         setLoading(false);
         if (error.response) {
           notification.error({
-            description: `${error.response.data.message}`,
+            description: error.response.data.message,
             message: '',
           });
         } else {
@@ -48,92 +53,88 @@ const Login = () => {
       });
   };
 
+  const handleMode = () => {};
+
   return (
-    <div className="flex w-full h-screen">
-      <div className="lg:w-1/2 xl:max-w-screen-sm">
-        <div className="h-1/6 py-12 bg-indigo-100 lg:bg-white flex justify-center lg:justify-start lg:px-12">
-          <div className="cursor-pointer flex items-center">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M9 17.5H3.5M6.5 12H2M9 6.5H4M17 3L10.4036 12.235C10.1116 12.6438 9.96562 12.8481 9.97194 13.0185C9.97744 13.1669 10.0486 13.3051 10.1661 13.3958C10.3011 13.5 10.5522 13.5 11.0546 13.5H16L15 21L21.5964 11.765C21.8884 11.3562 22.0344 11.1519 22.0281 10.9815C22.0226 10.8331 21.9514 10.6949 21.8339 10.6042C21.6989 10.5 21.4478 10.5 20.9454 10.5H16L17 3Z"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              ></path>
-            </svg>
-            <div className="text-2xl text-indigo-800 tracking-wide ml-2 font-semibold">
-              Admin Login
-            </div>
-          </div>
-        </div>
-        <div className="w-full h-5/6 flex justify-center items-center">
-          <div className="w-full px-12 mb-40 sm:px-24 md:px-48 lg:px-12 xl:px-24 xl:max-w-2xl">
-            <h2
-              className="text-center text-4xl text-indigo-900 font-display font-semibold lg:text-left xl:text-5xl
-                    xl:text-bold"
-            >
-              Log In
-            </h2>
-            <div className="mt-12">
-              <form onSubmit={(e) => handleClick(e)}>
-                <div>
-                  <div className="text-sm font-bold text-gray-700 tracking-wide">
-                    Email Address
-                  </div>
-                  <input
-                    id="email"
-                    className="w-full text-lg p-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
-                    type="email"
-                    placeholder="mike@gmail.com"
-                  />
-                </div>
-                <div className="mt-8">
-                  <div className="flex flex-col ">
-                    <div className="text-sm font-bold text-gray-700 tracking-wide">
-                      Password
+    <div className="relative float-right h-full min-h-screen w-full !bg-white dark:!bg-navy-900">
+      <AuthButton />
+      <main className="mx-auto min-h-screen">
+        <div className="relative flex">
+          <div className="mx-auto flex min-h-full w-full flex-col justify-start pt-12 md:max-w-[75%] lg:h-screen lg:max-w-[1013px] lg:px-8 lg:pt-0 xl:h-[100vh] xl:max-w-[1383px] xl:px-0 xl:pl-[70px]">
+            <div className="mb-auto flex flex-col pl-5 pr-5 md:pr-0 md:pl-12 lg:max-w-[48%] lg:pl-0 xl:max-w-full">
+              <div className="mt-16 mb-16 flex h-full w-full items-center justify-center px-2 md:mx-0 md:px-0 lg:mb-10 lg:items-center lg:justify-start">
+                <div className="mt-[10vh] w-full max-w-full flex-col items-center md:pl-4 lg:pl-0 xl:max-w-[420px]">
+                  <h4 className="mb-2.5 text-4xl font-bold text-navy-700 dark:text-white">
+                    Sign In
+                  </h4>
+                  <p className="mb-9 ml-1 text-base text-gray-600">
+                    Enter your email and password to sign in!
+                  </p>
+                  <form onSubmit={(e) => handleClick(e)}>
+                    <div className="mb-3">
+                      <label
+                        htmlFor="email"
+                        className="text-sm text-navy-700 dark:text-white ml-1.5 font-medium"
+                      >
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        required
+                        placeholder="mail@example.com"
+                        className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none border-gray-200 dark:!border-white/10 dark:text-white"
+                      />
                     </div>
-                    <input
-                      id="password"
-                      required
-                      className="w-full text-lg p-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
-                      type="password"
-                      placeholder="Enter your Password"
-                    />
-                  </div>
+                    <div className="mb-3">
+                      <label
+                        htmlFor="password"
+                        className="text-sm text-navy-700 dark:text-white ml-1.5 font-medium"
+                      >
+                        Password
+                      </label>
+                      <input
+                        type="password"
+                        id="password"
+                        required
+                        placeholder="password"
+                        className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none border-gray-200 dark:!border-white/10 dark:text-white"
+                      />
+                    </div>
+                    <div className="mb-3 flex items-center justify-between px-2">
+                      <a
+                        className="text-sm font-medium text-brand-500 hover:text-brand-600 dark:text-white"
+                        href=""
+                      >
+                        Forgot Password?
+                      </a>
+                    </div>
+                    <button
+                      className="linear mt-2 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200"
+                      type="submit"
+                      disabled={loading}
+                    >
+                      {!loading ? (
+                        'Sign In'
+                      ) : (
+                        <Spin indicator={Loading} style={{ color: 'white' }} />
+                      )}
+                    </button>
+                  </form>
                 </div>
-                <div className="mt-10">
-                  <button
-                    className="bg-indigo-500 text-gray-100 p-4 w-full rounded-full tracking-wide
-                                font-semibold font-display focus:outline-none focus:shadow-outline hover:bg-indigo-600
-                                shadow-lg"
-                    type="submit"
-                    disabled={loading}
-                  >
-                    {!loading ? (
-                      'Log In'
-                    ) : (
-                      <Spin indicator={Loading} style={{ color: 'white' }} />
-                    )}
-                  </button>
-                </div>
-              </form>
+              </div>
+              <div className="absolute right-0 hidden h-full min-h-screen md:block lg:w-[49vw] 2xl:w-[44vw]">
+                <div
+                  className="absolute flex h-full w-full items-end justify-center bg-cover bg-center lg:rounded-bl-[120px] xl:rounded-bl-[200px]"
+                  style={{
+                    backgroundImage: `url(${imgUrl})`,
+                  }}
+                ></div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className="flex flex-col hidden lg:flex items-center justify-center bg-indigo-100 flex-1 h-screen">
-        <div className="h-1/6 w-full"></div>
-        <div className="h-5/6 flex justify-center mb-20 max-w-xs transform duration-200 hover:scale-110 cursor-pointer">
-          <LoginImage />
-        </div>
-      </div>
+      </main>
     </div>
   );
 };

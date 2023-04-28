@@ -3,14 +3,27 @@ import { Button, Modal } from 'antd';
 import 'antd/dist/antd';
 import uploadServices from 'src/services/uploadServices';
 
-const PromptModal = ({ promptValue, showModal, setShowModal }) => {
+const PromptModal = ({
+  promptValue,
+  setPromptValue,
+  showModal,
+  setShowModal,
+  index,
+}) => {
+  console.log('Modal value = ', promptValue);
+  console.log('Modal index = ', index);
   const [value, setValue] = useState('');
 
   const handleValue = () => {
+    const data = {
+      index: index,
+      value: value,
+    };
     uploadServices
-      .prompt(value)
+      .prompt(data)
       .then((result) => {
-        console.log(result);
+        console.log('Modal promptVa = ', result);
+        setPromptValue(result.data.data);
         setShowModal(false);
       })
       .catch((error) => {
@@ -32,7 +45,7 @@ const PromptModal = ({ promptValue, showModal, setShowModal }) => {
       <input
         type="text"
         className="bg-gray-50 border border-blue-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
-        defaultValue={promptValue}
+        defaultValue={promptValue[index]}
         onChange={(e) => setValue(e.target.value)}
       />
     </Modal>
