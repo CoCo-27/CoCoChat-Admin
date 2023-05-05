@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { message, Upload, notification } from 'antd';
+import { Upload, notification } from 'antd';
 import { UploadFile } from 'antd/es/upload';
 import setAuthToken from 'src/utils/setAuthToken';
 import ChatMessage from '../ChatMessage/ChatMessage';
@@ -39,7 +39,6 @@ const Chat = ({ setLoading }) => {
     },
     files,
     beforeUpload: (info: UploadFile) => {
-      console.log('BEFORE = ', info);
       if (info.type !== 'application/pdf') {
         notification.error({
           description: `${info.name} Upload Failed`,
@@ -57,9 +56,7 @@ const Chat = ({ setLoading }) => {
       .then((result) => {
         setTitle(result.data.data[0].title);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   }, [title]);
 
   const handleEmbedding = (e) => {
@@ -68,15 +65,12 @@ const Chat = ({ setLoading }) => {
     uploadServices
       .embedding(fileName)
       .then((result) => {
-        console.log('result = ', result);
         notification.success({
           description: `${result.data}`,
           message: '',
         });
       })
-      .catch((error) => {
-        console.log('Emb = ', error);
-      });
+      .catch((error) => {});
   };
 
   const handleCancel = (e) => {
@@ -94,7 +88,6 @@ const Chat = ({ setLoading }) => {
     titleServices
       .editTitle(promptValue)
       .then((result) => {
-        console.log(result);
         setPromptValue('');
         setTitle(result.data.data);
         setLoading(false);
@@ -105,7 +98,6 @@ const Chat = ({ setLoading }) => {
         });
       })
       .catch((error) => {
-        console.log(error);
         setLoading(false);
         notification.success({
           description: 'Something went Wrong',

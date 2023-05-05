@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import PromptModal from '../PromptModal/PromptModal';
 
 const Question = (props) => {
-  console.log('Question !! = ', props);
   const [text, setText] = useState(props.name ? props.name : '');
 
   return (
@@ -29,7 +28,7 @@ const Question = (props) => {
         </div>
       ) : (
         <button
-          className="flex w-full cursor-pointer rounded-lg pl-4 py-2 text-base text-white transition-colors duration-200 bg-[#343541]/90"
+          className="flex w-full cursor-pointer rounded-lg p-2 text-base text-white transition-colors duration-200 bg-[#343541]/90"
           onClick={() => props.onClick(props.index)}
         >
           {text}

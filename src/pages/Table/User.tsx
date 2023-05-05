@@ -12,7 +12,6 @@ const UserTable = () => {
     authServices
       .getUserAll()
       .then((result) => {
-        console.log(result);
         setUserData(result.data.data);
       })
       .catch((error) => {

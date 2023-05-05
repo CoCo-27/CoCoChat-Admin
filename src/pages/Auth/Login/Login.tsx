@@ -28,7 +28,6 @@ const Login = () => {
           message: '',
         });
         setLoading(false);
-        console.log(result);
         localStorage.setItem('email', result.data.data.email);
         localStorage.setItem('token', result.data.data.accessToken);
         setAuthToken(localStorage.getItem('token'));
@@ -37,7 +36,6 @@ const Login = () => {
         }, 500);
       })
       .catch((error) => {
-        console.log('error = ', error);
         setLoading(false);
         if (error.response) {
           notification.error({
@@ -52,8 +50,6 @@ const Login = () => {
         }
       });
   };
-
-  const handleMode = () => {};
 
   return (
     <div className="relative float-right h-full min-h-screen w-full !bg-white dark:!bg-navy-900">

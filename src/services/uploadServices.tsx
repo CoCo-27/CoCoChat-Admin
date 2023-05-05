@@ -24,7 +24,6 @@ const embedding = (fileName) => {
 };
 
 const requestMessage = (value) => {
-  console.log('vaule = ', value);
   return fetch(backend_api + 'upload/requestMessage', {
     method: 'POST',
     headers: {

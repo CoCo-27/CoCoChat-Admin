@@ -41,7 +41,6 @@ const SideBar = ({ open, onClose }) => {
         navigate('/');
       })
       .catch((error) => {
-        console.log(error);
         notification.error({
           description: error.response.data.message,
           message: '',

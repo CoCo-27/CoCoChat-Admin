@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Modal } from 'antd';
+import React, { useState } from 'react';
+import { Modal } from 'antd';
 import 'antd/dist/antd';
 import uploadServices from 'src/services/uploadServices';
 
@@ -10,8 +10,6 @@ const PromptModal = ({
   setShowModal,
   index,
 }) => {
-  console.log('Modal value = ', promptValue);
-  console.log('Modal index = ', index);
   const [value, setValue] = useState('');
 
   const handleValue = () => {
@@ -22,13 +20,10 @@ const PromptModal = ({
     uploadServices
       .prompt(data)
       .then((result) => {
-        console.log('Modal promptVa = ', result);
         setPromptValue(result.data.data);
         setShowModal(false);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
 
   return (

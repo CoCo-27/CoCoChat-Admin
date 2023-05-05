@@ -6,42 +6,29 @@ import { notification } from 'antd';
 import Question from '../Question/Question';
 import questionServices from 'src/services/questionServices';
 import uploadServices from 'src/services/uploadServices';
-import { isEmpty } from 'src/utils/isEmpty';
 
 const Chatbar = ({ setLoading }) => {
   const navigate = useNavigate();
-  const [count, setCount] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [editable, setEditable] = useState(false);
   const [questionArray, setQuestionArray] = useState([]);
   const [promptValue, setPromptValue] = useState([]);
   const [selectIndex, setSelectIndex] = useState('');
-  const [conversationCount, setConversationCount] = useState(
-    isEmpty(JSON.parse(localStorage.getItem('conversationHistory')))
-      ? []
-      : JSON.parse(localStorage.getItem('conversationHistory'))
-  );
 
   useEffect(() => {
     questionServices
       .getQuestion()
       .then((result) => {
-        console.log('Queston!!!!! = ', result);
         setQuestionArray(result.data.data);
       })
-      .catch((error) => {
-        console.log('Question Error = ', error);
-      });
+      .catch((error) => {});
 
     uploadServices
       .getPrompt()
       .then((result) => {
-        console.log('GetPrompt = ', result);
         setPromptValue(result.data.data);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   }, []);
 
   const gotoDashBoard = () => {
@@ -49,7 +36,6 @@ const Chatbar = ({ setLoading }) => {
   };
 
   const handleShowModal = (index) => {
-    console.log('Before Index = ', index);
     setSelectIndex(index);
     setShowModal(true);
   };
@@ -58,12 +44,10 @@ const Chatbar = ({ setLoading }) => {
     const array = Array.from(questionArray);
     array[index] = text;
 
-    console.log('array = ', array);
     setLoading(true);
     questionServices
       .editQuestion(array)
       .then((result) => {
-        console.log(result);
         setEditable(false);
         setLoading(false);
         setQuestionArray(result.data.data);
@@ -74,7 +58,6 @@ const Chatbar = ({ setLoading }) => {
         });
       })
       .catch((error) => {
-        console.log(error);
         setLoading(false);
         notification.error({
           description: error.response.message,
@@ -87,28 +70,6 @@ const Chatbar = ({ setLoading }) => {
   const handleEdit = (index) => {
     setSelectIndex(index);
     setEditable(!editable);
-  };
-
-  const handlePlus = () => {
-    conversationCount.push('1');
-    localStorage.setItem(
-      'conversationHistory',
-      JSON.stringify(conversationCount)
-    );
-    setConversationCount([...conversationCount]);
-  };
-
-  const onDelete = (index) => {
-    conversationCount.splice(index, 1);
-    localStorage.setItem(
-      'conversationHistory',
-      JSON.stringify(conversationCount)
-    );
-    setConversationCount([...conversationCount]);
-  };
-
-  const handleClickConversation = (index) => {
-    setCount(index);
   };
 
   return (
@@ -124,10 +85,7 @@ const Chatbar = ({ setLoading }) => {
           Admin Dash Board
         </button>
 
-        <button
-          className="flex w-full gap-3 items-center cursor-pointer select-none rounded-md border border-white/20 p-4 mt-4 text-[14px] leading-normal text-white transition-colors duration-200 hover:bg-gray-500/10"
-          // onClick={() => handlePlus()}
-        >
+        <button className="flex w-full gap-3 items-center cursor-pointer select-none rounded-md border border-white/20 p-4 mt-4 text-[14px] leading-normal text-white transition-colors duration-200 hover:bg-gray-500/10">
           <IconPlus size={18} />
           New Question
         </button>
@@ -165,25 +123,6 @@ const Chatbar = ({ setLoading }) => {
                 No Questions.
               </div>
             )}
-            {/* {conversationCount.length > 0 ? (
-              <div className="h-full">
-                {conversationCount.map((item, index) => {
-                  return (
-                    <ChatConversation
-                      index={index}
-                      count={count}
-                      click={handleClickConversation}
-                      delete={onDelete}
-                    />
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="flex flex-col gap-3 items-center text-sm leading-normal mt-8 text-white opacity-50">
-                <IconMessagesOff />
-                No conversations.
-              </div>
-            )} */}
           </div>
         </div>
       </div>
