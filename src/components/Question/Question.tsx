@@ -6,7 +6,7 @@ const Question = (props) => {
 
   return (
     <div className="relative flex items-center py-2">
-      {props.showModal === true && props.index == props.select ? (
+      {props.showModal === true && props.index === props.select ? (
         <PromptModal
           showModal={props.showModal}
           setShowModal={props.setShowModal}
@@ -18,7 +18,7 @@ const Question = (props) => {
         <></>
       )}
 
-      {props.editable === true && props.index == props.select ? (
+      {props.editable === true && props.index === props.select ? (
         <div className="flex w-full rounded-lg py-2 text-base text-white transition-colors duration-200 bg-[#343541]/90">
           <input
             className="pl-4 mr-12 bg-[#343541]/90 overflow-hidden overflow-ellipsis border-neutral-400 bg-transparent text-left text-base text-white outline-none focus:border-neutral-100"
@@ -35,7 +35,7 @@ const Question = (props) => {
         </button>
       )}
       <div className="absolute right-1 z-10 flex text-gray-300">
-        {props.editable === true && props.index == props.select ? (
+        {props.editable === true && props.index === props.select ? (
           <div>
             <button
               className="min-w-[20px] p-1 text-neutral-400 hover:text-neutral-100"
