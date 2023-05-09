@@ -2,6 +2,7 @@
   "name": "aibot-gpt3",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/admin",
   "dependencies": {
     "@headlessui/react": "^1.7.10",
     "@tabler/icons-react": "^2.14.0",

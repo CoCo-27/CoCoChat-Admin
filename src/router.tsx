@@ -36,7 +36,7 @@ const router = createBrowserRouter([
     path: '/chat',
     element: <Chat />,
   },
-]);
+], {basename: '/admin'});
 
 function Routes() {
   return <RouterProvider router={router} />;

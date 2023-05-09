@@ -17,9 +17,10 @@ const logOut = (data) => {
   return axios.post(backend_api + 'user/logout', data);
 };
 
-export default {
+const object = {
   authRegister,
   authLogin,
   getUserAll,
   logOut,
 };
+export default object;
