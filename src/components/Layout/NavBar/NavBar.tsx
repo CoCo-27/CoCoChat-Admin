@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { RiMoonFill, RiSunFill } from 'react-icons/ri';
 import { FiAlignJustify } from 'react-icons/fi';
 
 const NavBar = ({ onOpenSidenav }) => {
+  const location = useLocation();
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem('theme')
       ? JSON.parse(localStorage.getItem('theme'))
@@ -12,21 +14,21 @@ const NavBar = ({ onOpenSidenav }) => {
   return (
     <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl bg-white/10 p-2 backdrop-blur-xl dark:bg-[#0b14374d]">
       <div className="ml-[6px]">
-        <div className="h-6 w-[224px] pt-1">
-          <a className="text-sm font-normal text-navy-700 hover:underline dark:text-white dark:hover:text-white">
+        <div className="h-6 w-[224px] pt-1 flex">
+          <div className="text-sm font-normal cursor-point text-navy-700 hover:underline dark:text-white dark:hover:text-white">
             Pages
             <span className="mx-1 text-sm text-navy-700 hover:text-navy-700 dark:text-white">
               /
             </span>
-          </a>
-          <a className="text-sm font-normal capitalize text-navy-700 hover:underline dark:text-white dark:hover:text-white">
-            Main Dashboard
-          </a>
+          </div>
+          <div className="text-sm font-normal cursor-point capitalize text-navy-700 hover:underline dark:text-white dark:hover:text-white">
+            {location.pathname.replace('/', '')}
+          </div>
         </div>
         <p className="shrink text-[33px] capitalize text-navy-700 dark:text-white">
-          <a className="font-bold capitalize hover:text-navy-700 dark:hover:text-white">
-            Main Dashboard
-          </a>
+          <div className="font-bold cursor-point capitalize hover:text-navy-700 dark:hover:text-white">
+            {location.pathname.replace('/', '')}
+          </div>
         </p>
       </div>
       <div className="relative mt-[3px] flex h-[61px] w-[100px] flex-grow items-center justify-around gap-2 rounded-full bg-white px-2 py-2 shadow-xl shadow-shadow-500 dark:!bg-navy-800 dark:shadow-none md:w-[100px] md:flex-grow-0 md:gap-1 xl:w-[100px] xl:gap-2">

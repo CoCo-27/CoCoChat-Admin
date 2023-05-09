@@ -35,10 +35,11 @@ const requestMessage = (value) => {
   });
 };
 
-export default {
+const object = {
   uploadFile,
   embedding,
   requestMessage,
   prompt,
   getPrompt,
-};
+}
+export default object
